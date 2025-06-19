@@ -27,9 +27,7 @@ from ..common.utils import MetricsTracker, plot_improved_metrics
 
 
 def train_epoch(model, dataloader, optimizer, scheduler, device, criterion):
-    # model.train()
-    model.classifier = model.classifier.train()
-    model.hidden = model.hidden.train()
+    model.train()
     total_loss = 0
     correct_predictions = 0
     total_predictions = 0
@@ -67,9 +65,7 @@ def train_epoch(model, dataloader, optimizer, scheduler, device, criterion):
     return avg_loss, accuracy
 
 def validate(model, dataloader, device, criterion):
-    # model.eval()
-    model.classifier = model.classifier.eval()
-    model.hidden = model.hidden.eval()
+    model.eval()
     total_loss = 0
     all_predictions = []
     all_labels = []
@@ -118,11 +114,8 @@ def train_biobert_classifier():
         tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
         model = BioBERTClassifier(MODEL_NAME, NUM_CLASSES).to(device)
 
-        for name, param in model.bert.named_parameters():
-            param.requires_grad = False
-        model.bert = model.bert.eval()
-        model.classifier = model.classifier.train()
-        model = model.train()
+        # for name, param in model.bert.named_parameters():
+        #     param.requires_grad = False
         
         print("Creating dataset...")
         train_dataset = MedicalTextDataset(
